@@ -612,6 +612,26 @@ assert_eq "load_package_config: canary disabled → canaryDomains empty" "" "$ca
 assert_eq "load_package_config: force_dns=0 → unset" "" "$force_dns"
 
 ###############################################################################
+#                         SHELL SCRIPT SYNTAX                                 #
+###############################################################################
+
+printf "\n--- Shell script syntax ---\n"
+for shellscript in \
+	files/etc/init.d/* \
+	files/etc/uci-defaults/*; do
+	[ -f "$shellscript" ] || continue
+	head -1 "$shellscript" | grep -q '^#!/bin/sh' || continue
+	name="${shellscript#files/}"
+	n_tests=$((n_tests + 1))
+	if sh -n "$shellscript" 2>/dev/null; then
+		pass "sh -n $name"
+	else
+		fail "sh -n $name" "syntax ok" "syntax error"
+		sh -n "$shellscript"
+	fi
+done
+
+###############################################################################
 #                               SUMMARY                                       #
 ###############################################################################
 
