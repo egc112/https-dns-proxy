@@ -155,12 +155,10 @@ notrack_nft() {
 			existing_content="$(cat "$NOTRACK_NFT_FILE" 2>/dev/null)"
 			[ "$new_content" = "$existing_content" ] && return 0
 			echo "$new_content" > "$NOTRACK_NFT_FILE"
-			procd_set_config_changed firewall
 		;;
 		remove)
 			[ -f "$NOTRACK_NFT_FILE" ] || return 0
 			rm -f "$NOTRACK_NFT_FILE"
-			procd_set_config_changed firewall
 		;;
 	esac
 }
@@ -446,8 +444,8 @@ service_triggers() {
 	fi
 }
 
-service_started() { [ -n "$force_dns" ] && procd_set_config_changed firewall; }
-service_stopped() { [ -n "$force_dns" ] && procd_set_config_changed firewall; }
+service_started() { { [ -n "$force_dns" ] || [ -n "$notrack_dns" ]; } && procd_set_config_changed firewall; }
+service_stopped() { { [ -n "$force_dns" ] || [ -n "$notrack_dns" ]; } && procd_set_config_changed firewall; }
 restart() { reload "$@"; }
 
 dnsmasq_instance_append_force_dns_port() {
