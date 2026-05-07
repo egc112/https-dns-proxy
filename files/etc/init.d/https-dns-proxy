@@ -160,9 +160,9 @@ notrack_nft() {
 			[ -s "$NOTRACK_NFT_FILE" ] && nft -c -f "$NOTRACK_NFT_FILE"
 		;;
 		remove)
-			[ -f "$NOTRACK_NFT_FILE" ] && rm -f "$NOTRACK_NFT_FILE"
-			nft delete table inet https_dns_proxy_notrack 2>/dev/null
-			[ ! -s "$NOTRACK_NFT_FILE" ]
+			rm -f "$NOTRACK_NFT_FILE"
+			nft delete table inet https_dns_proxy_notrack >/dev/null 2>&1
+			! nft list table inet https_dns_proxy_notrack >/dev/null 2>&1 && [ ! -s "$NOTRACK_NFT_FILE" ]
 		;;
 	esac
 }
