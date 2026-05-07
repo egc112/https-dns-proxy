@@ -145,13 +145,11 @@ notrack_nft() {
 				return
 			fi
 			new_content="$(cat <<-EOF
-				table inet https_dns_proxy_notrack {
-					chain raw_output {
-						type filter hook output priority raw; policy accept;
-						meta l4proto { tcp, udp } th dport { ${port_set} } ip daddr 127.0.0.0/8 notrack
-						meta l4proto { tcp, udp } th sport { ${port_set} } ip saddr 127.0.0.0/8 notrack
-					}
-				}
+				add table inet https_dns_proxy_notrack
+				flush table inet https_dns_proxy_notrack
+				add chain inet https_dns_proxy_notrack raw_output { type filter hook output priority raw; policy accept; }
+				add rule inet https_dns_proxy_notrack raw_output meta l4proto { tcp, udp } th dport { ${port_set} } ip daddr 127.0.0.0/8 notrack
+				add rule inet https_dns_proxy_notrack raw_output meta l4proto { tcp, udp } th sport { ${port_set} } ip saddr 127.0.0.0/8 notrack
 			EOF
 			)"
 			existing_content="$(cat "$NOTRACK_NFT_FILE" 2>/dev/null)"
@@ -426,7 +424,7 @@ stop_service() {
 		uci_commit 'dhcp'
 		dnsmasq_restart || _error=1
 	fi
-	notrack_nft remove
+	notrack_nft remove || _error=1
 # shellcheck disable=SC2015
 	[ -z "$_error" ] && output_okn || output_failn
 }
