@@ -690,9 +690,14 @@ assert_rc "notrack_nft remove deletes the snippet file" 0 $?
 grep -q "delete table inet https_dns_proxy_notrack" "$__nft_calls_file"
 assert_rc "notrack_nft remove invokes 'nft delete table'" 0 $?
 
-# ── remove is a no-op when file already absent ──
+# ── remove is a no-op when file already absent and table already gone ──
+# Mock `nft` to return non-zero so `nft list table` reports "no such table"
+# (the real-world post-delete state); the new remove logic returns 0 only
+# when both the file and the live table are absent.
+__nft_rc=1
 notrack_nft remove
-assert_rc "notrack_nft remove succeeds when file already absent" 0 $?
+assert_rc "notrack_nft remove succeeds when file and table both absent" 0 $?
+__nft_rc=0
 
 ###############################################################################
 #                         SHELL SCRIPT SYNTAX                                 #
