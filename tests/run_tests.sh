@@ -4,7 +4,7 @@
 # Tests helper functions, validation logic, dnsmasq integration,
 # and UCI migration by mocking OpenWrt's rc.common framework.
 #
-# Usage: cd source.openwrt.melmac.ca/https-dns-proxy && bash tests/run_tests.sh
+# Usage: cd source.mossdef.org/https-dns-proxy && bash tests/run_tests.sh
 
 set -o pipefail
 

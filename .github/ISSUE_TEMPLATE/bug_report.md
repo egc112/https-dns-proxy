@@ -30,7 +30,7 @@ A clear and concise description of what you expected to happen.
 
 **Diagnostic info**
 
-Please run the following and paste the output (you can mask sensitive parts). See [Getting Help](https://docs.openwrt.melmac.ca/https-dns-proxy/#getting-help) in the docs for context.
+Please run the following and paste the output (you can mask sensitive parts). See [Getting Help](https://docs.mossdef.org/https-dns-proxy/#getting-help) in the docs for context.
 
 ```sh
 ubus call system board
